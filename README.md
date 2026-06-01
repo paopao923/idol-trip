@@ -1,0 +1,118 @@
+[index.html](https://github.com/user-attachments/files/28462752/index.html)
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>✨ 我的追星线下纪念馆 ✨</title>
+</head>
+<body style="background: linear-gradient(135deg, #ffe5ec 0%, #e8f0fe 100%); min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box;">
+
+    <h1 style="text-align: center; color: #ff6b81; font-family: sans-serif;">✨ 我的线下Memories ✨</h1>
+
+    <div style="background-color: rgba(255, 255, 255, 0.85); backdrop-filter: blur(5px); border-radius: 15px; padding: 20px; max-width: 400px; margin: 20px auto; box-shadow: 0 4px 15px rgba(0,0,0,0.1); font-family: sans-serif;">
+        
+        <h3 style="color: #de435d; margin-top: 0; text-align: center;">✍️ 记录我的线下行程</h3>
+        
+        <div style="margin-bottom: 12px;">
+            <label style="display: block; font-size: 14px; color: #555; margin-bottom: 5px;">📅 选择日期与城市</label>
+            <input type="text" id="input-date" placeholder="例如：2026.06.01 · 深圳" style="width: 100%; padding: 8px; border: 1px solid #ffb3c1; border-radius: 8px; box-sizing: border-box; outline: none;">
+        </div>
+        
+        <div style="margin-bottom: 12px;">
+            <label style="display: block; font-size: 14px; color: #555; margin-bottom: 5px;">👗 今日 OOTD</label>
+            <input type="text" id="input-ootd" placeholder="今天穿了什么漂亮衣服？" style="width: 100%; padding: 8px; border: 1px solid #ffb3c1; border-radius: 8px; box-sizing: border-box; outline: none;">
+        </div>
+        
+        <div style="margin-bottom: 12px;">
+            <label style="display: block; font-size: 14px; color: #555; margin-bottom: 5px;">🏠场馆</label>
+            <input type="text" id="input-transport" placeholder="盛满爱意的地方是哪里？" style="width: 100%; padding: 8px; border: 1px solid #ffb3c1; border-radius: 8px; box-sizing: border-box; outline: none;">
+        </div>
+        
+        <div style="margin-bottom: 12px;">
+            <label style="display: block; font-size: 14px; color: #555; margin-bottom: 5px;">🎤 最喜欢/感动的舞台</label>
+            <textarea id="input-stage" placeholder="哪个舞台让你想要流泪？" style="width: 100%; padding: 8px; border: 1px solid #ffb3c1; border-radius: 8px; box-sizing: border-box; outline: none; height: 60px; resize: none;"></textarea>
+        </div>
+        
+        <div style="margin-bottom: 15px;">
+            <label style="display: block; font-size: 14px; color: #555; margin-bottom: 5px;">🍕 这一天吃了什么呀</label>
+            <input type="text" id="input-food" placeholder="今天吃了什么好吃的？" style="width: 100%; padding: 8px; border: 1px solid #ffb3c1; border-radius: 8px; box-sizing: border-box; outline: none;">
+        </div>
+        
+        <button onclick="addRecord()" style="width: 100%; background-color: #ff6b81; color: white; border: none; padding: 10px; border-radius: 8px; font-size: 16px; cursor: pointer; font-weight: bold; transition: background 0.3s;">✨ 封存这段美好回忆 ✨</button>
+
+    </div>
+
+    <div id="records-container"></div>
+
+    <script>
+        // 🧙‍♂️ 魔法 1：一进网页，立刻去浏览器的“保险箱”里把以前存的数据拿出来显示
+        window.onload = function() {
+            displayRecords();
+        }
+
+        function addRecord() {
+            const date = document.getElementById('input-date').value;
+            const ootd = document.getElementById('input-ootd').value;
+            const transport = document.getElementById('input-transport').value;
+            const stage = document.getElementById('input-stage').value;
+            const food = document.getElementById('input-food').value;
+
+            if (date.trim() === "") {
+                alert("先写上亮闪闪的日期和城市吧！✨");
+                return;
+            }
+
+            // 把这一条新记录打包成一个数据对象
+            const newRecord = { date, ootd, transport, stage, food };
+
+            // 🧙‍♂️ 魔法 2：把新记录塞进保险箱
+            let records = JSON.parse(localStorage.getItem('myIdolRecords')) || [];
+            records.unshift(newRecord); // 把最新的记录放在最前面
+            localStorage.setItem('myIdolRecords', JSON.stringify(records));
+
+            // 重新刷新列表显示，并清空输入框
+            displayRecords();
+            clearInputs();
+        }
+
+        // 🧙‍♂️ 魔法 3：专门负责把保险箱里的数据变成一张张粉嫩卡片的函数
+        function displayRecords() {
+            const records = JSON.parse(localStorage.getItem('myIdolRecords')) || [];
+            const container = document.getElementById('records-container');
+            
+            // 先把盘子洗干净
+            container.innerHTML = ""; 
+
+            // 循环把每条数据织成 HTML 卡片
+            records.forEach(record => {
+                const cardHTML = `
+                    <div style="background-color: #fff5f6; border: 2px solid #ffb3c1; border-radius: 15px; padding: 20px; max-width: 400px; margin: 20px auto; box-shadow: 0 4px 8px rgba(0,0,0,0.05); font-family: sans-serif; animation: popIn 0.3s ease;">
+                        <h3 style="color: #de435d; margin-top: 0;">📅 ${record.date}</h3>
+                        <hr style="border: 0; border-top: 1px dashed #ffb3c1;">
+                        <p><strong>👗 今日 OOTD：</strong>${record.ootd || '未记录'}</p>
+                        <p><strong>✈️ 交通方式：</strong>${record.transport || '未记录'}</p>
+                        <p><strong>🎤 神仙舞台：</strong>${record.stage || '未记录'}</p>
+                        <p><strong>🍕 限定美食：</strong>${record.food || '未记录'}</p>
+                    </div>
+                `;
+                container.innerHTML += cardHTML;
+            });
+        }
+
+        function clearInputs() {
+            document.getElementById('input-date').value = '';
+            document.getElementById('input-ootd').value = '';
+            document.getElementById('input-transport').value = '';
+            document.getElementById('input-stage').value = '';
+            document.getElementById('input-food').value = '';
+        }
+    </script>
+
+    <style>
+        @keyframes popIn {
+            0% { transform: scale(0.9); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</body>
+</html>
